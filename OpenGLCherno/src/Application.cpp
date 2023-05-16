@@ -39,12 +39,8 @@ int main()
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertexList.size(), triangulo.vertexList.data(), GL_STATIC_DRAW);
-    
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
     glEnableVertexAttribArray(0);
-    //Codigo de createTriangle() acaba aqui
-
 
     // -----------------------------------------------------------------------------
 
