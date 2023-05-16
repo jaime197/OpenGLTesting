@@ -31,10 +31,6 @@ int main()
 
     // -----------------------------------------------------------------------------
 
-    //Object3D triangulo = Object3D();
-    //triangulo.createTriangle();
-
-    //el siguiente codigo deberia ser usado desde createTriangle(). 
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
