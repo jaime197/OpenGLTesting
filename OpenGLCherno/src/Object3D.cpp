@@ -2,22 +2,29 @@
 
 void Object3D::createTriangle()
 {
-    vertexList.clear();  // clear the current vertex list
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    std::vector<Vertex> vertexList;
     Vertex v1, v2, v3;
     Vector4f vec1, vec2, vec3;
-
     v1.position = vec1.make_vector4f(0.0, 1.0, 0.0, 0.0);
     v2.position = vec2.make_vector4f(0.87, -0.5, 0.0, 0.0);
-    v3.position = vec3.make_vector4f(-0.87, -0.05, 0.0, 0.0);
+    v3.position = vec3.make_vector4f(-0.87, -0.5, 0.0, 0.0);
 
-    // add the vertices to the vertex list
     vertexList.push_back(v1);
     vertexList.push_back(v2);
     vertexList.push_back(v3);
 
-    // Generate and bind a new vertex buffer object (VBO)
-    glGenBuffers(1, &vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertexList.size(), vertexList.data(), GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
+    glEnableVertexAttribArray(0);
 }
 
 void Object3D::move(double timeStep)
@@ -30,7 +37,7 @@ void Object3D::move(double timeStep)
     if (InputManager::getKeyState(GLFW_KEY_D)) {
         double rotationSpeed = 45.0; // degrees per second
         double rotationAmount = rotationSpeed * timeStep;
-        rotation.y += rotationAmount;
+        rotation.z += rotationAmount;
         std::cout << "right" << std::endl;
     }
 
@@ -38,7 +45,7 @@ void Object3D::move(double timeStep)
     if (InputManager::getKeyState(GLFW_KEY_A)) {
         double rotationSpeed = 45.0; // degrees per second
         double rotationAmount = rotationSpeed * timeStep;
-        rotation.y -= rotationAmount;
+        rotation.z -= rotationAmount;
         std::cout << "left" << std::endl;
     }
 
@@ -59,7 +66,7 @@ void Object3D::updateModelMatrix()
     Matrix4x4f scaleMatrix = Matrix4x4f().make_scale(scale.x, scale.y, scale.z);
 
     // Combine the transformations in the desired order
-    //modelMatrix = transMatrix * rotationMatrix * scaleMatrix;
+    modelMatrix = rotationMatrix;
 }
 
 void Object3D::updateVertexPositions() {
@@ -67,20 +74,6 @@ void Object3D::updateVertexPositions() {
     for (Vertex& vertex : vertexList) {
         vertex.position = modelMatrix * vertex.position;
     }
-}
-
-void Object3D::loadVertexData()
-{
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    // Get the size of the vertex data in bytes
-    size_t dataSize = vertexList.size() * sizeof(Vertex);
-
-    //printPositions(vertexList.data(), vertexList.size());
-
-    // Copy the vertex data to the GPU
-    glBufferData(GL_ARRAY_BUFFER, dataSize, vertexList.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
 }
 
 int Object3D::getVertexCount()

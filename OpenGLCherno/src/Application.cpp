@@ -1,38 +1,63 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <vector>
 #include <iostream>
 
+#include "Vertex.h"
 #include "Vector4f.h"
-#include "Matrix3x3f.h"
-#include "Matrix4x4f.h"
 #include "render.h"
-#include "ShaderProgramSource.h"
-#include <GLFW/glfw3.h>
+#include "Object3D.h"
+#include "shaders.h"
+
+
 
 int main()
 {
-	render renderer = render(640, 480);
-	InputManager inputManager = InputManager();
+    std::vector<Vertex> vertexList;
+    Vertex v1, v2, v3;
+    Vector4f vec1, vec2, vec3;
+    v1.position = vec1.make_vector4f(0.0, 1.0, 0.0, 0.0);
+    v2.position = vec2.make_vector4f(0.87, -0.5, 0.0, 0.0);
+    v3.position = vec3.make_vector4f(-0.87, -0.5, 0.0, 0.0);
 
-	renderer.initGL();
+    vertexList.push_back(v1);
+    vertexList.push_back(v2);
+    vertexList.push_back(v3);
 
-	Object3D triangulo = Object3D();
-	triangulo.createTriangle();
+    Object3D triangulo = Object3D(vertexList);
 
-	renderer.putObject(&triangulo);
+    render renderer = render(640, 480, triangulo);
+    renderer.initGL();
 
-	ShaderProgramSource source = source.ParseShader("shaders/Basic.shader");
-	unsigned int shader = source.CreateShader(source.VertexSource, source.FragmentSource);
-	glUseProgram(shader);
+    // -----------------------------------------------------------------------------
 
-	GLint location = glGetUniformLocation(shader, "u_Color");
-	glUniform4f(location, 0.8f, 0.3f, 0.8f, 1.0f);
+    //Object3D triangulo = Object3D();
+    //triangulo.createTriangle();
 
-	renderer.mainLoop();
+    //el siguiente codigo deberia ser usado desde createTriangle(). 
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertexList.size(), triangulo.vertexList.data(), GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
+    glEnableVertexAttribArray(0);
+    //Codigo de createTriangle() acaba aqui
 
-	return 0;
+
+    // -----------------------------------------------------------------------------
+
+    shaders s;
+    GLuint sp = s.getShaders();
+
+    renderer.putObject(&triangulo);
+    renderer.mainLoop(vao, sp);
+
+    glfwDestroyWindow(renderer.window);
+    glfwTerminate();
 }
-
-
-
-
-
-

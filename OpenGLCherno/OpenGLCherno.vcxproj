@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\shaders.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\Object3D.cpp" />
     <ClCompile Include="src\render.cpp" />
@@ -150,12 +151,12 @@
     <None Include="shaders\Basic.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\shaders.h" />
     <ClInclude Include="src\InputManager.h" />
     <ClInclude Include="src\Object3D.h" />
     <ClInclude Include="src\render.h" />
     <ClInclude Include="src\Matrix3x3f.h" />
     <ClInclude Include="src\Matrix4x4f.h" />
-    <ClInclude Include="src\ShaderProgramSource.h" />
     <ClInclude Include="src\Vector4f.h" />
     <ClInclude Include="src\Vertex.h" />
   </ItemGroup>

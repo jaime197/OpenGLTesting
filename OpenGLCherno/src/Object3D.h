@@ -1,7 +1,7 @@
 #pragma once
+#include <glad/glad.h>
 #include <vector>
 #include <iostream>
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Vector4f.h"
 #include "Matrix4x4f.h"
@@ -18,7 +18,28 @@ public:
 	std::vector<Vertex> vertexList;
 	std::vector<int> idList;
 	GLuint vbo;
+	GLuint vao;
 
+	Object3D(std::vector<Vertex> _vertexList)
+	{
+		position = Vector4f();
+		rotation = Vector4f();
+		scale = Vector4f();
+		modelMatrix = Matrix4x4f().make_identify();
+		vbo = 0;
+		vao = 0;
+		vertexList = _vertexList;
+	}
+
+	Object3D(const Object3D* other) {
+		position = other->position;
+		rotation = other->rotation;
+		scale = other->scale;
+		modelMatrix = other->modelMatrix;
+		vbo = other->vbo;
+		vao = other->vao;
+		vertexList = other->vertexList;
+	}
 
 	Object3D() {
 		position = Vector4f();
@@ -26,12 +47,12 @@ public:
 		scale = Vector4f();
 		modelMatrix = Matrix4x4f().make_identify();
 		vbo = 0;
+		vao = 0;
 	}
 	void createTriangle();
 	void move(double timeStep);
 	void updateModelMatrix();
 	void updateVertexPositions();
-	void loadVertexData();
 	GLuint getVBO() { return vbo; };
 	int getVertexCount();
 	
